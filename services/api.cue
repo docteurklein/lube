@@ -16,19 +16,8 @@ deployment: api: spec: template: spec: {
 				name:          http_port.name
 				containerPort: http_port.port
 			}]
-			volumeMounts: [{
-				mountPath: "/usr/share/nginx/html"
-				name:      "sources"
-			}]
-		},
-	]
-	volumes: [{
-		name: "sources"
-		hostPath: {
-			path: "/host/florian/work/docteurklein/lube"
-			type: "Directory"
 		}
-	}]
+	]
 }
 
 ingress: api: spec: rules: [{

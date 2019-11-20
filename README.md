@@ -25,7 +25,7 @@ Less painful **L**ocal K**ube**rnetes with cue-lang.
 ## deploy
 
 	cue yaml ./...
-	cue up ./...
+	cue up ./services/dev # or prod
 
 
 ## forward locally to a random port
