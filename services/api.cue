@@ -32,7 +32,7 @@ deployment: api: spec: template: spec: {
 }
 
 ingress: api: spec: rules: [{
-	host: string | *"api.demo.localhost"
+	host: string | *"api.default.localhost"
 	http: paths: [{
 		path: "/"
 		backend: {

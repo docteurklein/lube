@@ -1,1 +1,1 @@
-module: "kube"
+module: "lube"

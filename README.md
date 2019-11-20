@@ -10,7 +10,7 @@ Less painful **L**ocal K**ube**rnetes with cue-lang.
 
 ## setup local k8s cluster (once)
 
-	kind create cluster --config kind.yaml
+	kind create cluster --config cluster.yaml
 
 
 ## setup cue (once)
