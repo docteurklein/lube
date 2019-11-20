@@ -31,6 +31,7 @@ Less painful **L**ocal K**ube**rnetes with cue-lang.
 
 ## deploy
 
+	cue yaml ./...
 	cue up ./...
 
 

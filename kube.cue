@@ -21,10 +21,7 @@ deployment: [ID=_]: {
 		// 1 is the default, but we allow any number
 		replicas: *1 | int
 		template: {
-			metadata: labels: {
-				name:   ID
-				domain: "prod"
-			}
+			metadata: labels: name: ID
 			spec: containers: [...{
 				ports: [...{containerPort: >0 & <=65365}]
 			}]
@@ -38,15 +35,15 @@ service: [ID=_]: {
 	metadata: {
 		name: ID
 		labels: {
-			name:    ID     // by convention
+			name: ID
 		}
 	}
 	spec: {
 		ports: [...{
 			port:     >0 & <=65365
-			protocol: *"TCP" | "UDP" // from the Kubernetes definition
+			protocol: *"TCP" | "UDP"
 			name:     string
 		}]
-		selector: metadata.labels // we want those to be the same
+		selector: metadata.labels
 	}
 }
