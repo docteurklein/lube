@@ -6,7 +6,7 @@ import (
 	"tool/cli"
 )
 
-objects: [ x for v in [deployment, service] for x in v ]
+objects: [ x for v in [deployment, service, ingress] for x in v ]
 
 command: yaml: task: print: cli.Print & {
 	text: _yaml.MarshalStream(objects)

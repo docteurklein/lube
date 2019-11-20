@@ -1,11 +1,11 @@
 package kube
 
-http_port :: "http"
-
-service: api: spec: ports: [{
-	name: http_port
+http_port: {
+	name: "http"
 	port: 80
-}]
+}
+
+service: api: spec: ports: [http_port]
 
 deployment: api: spec: template: spec: {
 	containers: [
@@ -13,20 +13,31 @@ deployment: api: spec: template: spec: {
 			name:  "nginx"
 			image: "nginx:alpine"
 			ports: [{
-				name:          http_port
-				containerPort: 80
+				name:          http_port.name
+				containerPort: http_port.port
 			}]
 			volumeMounts: [{
-				mountPath: "/home/florian/work/docteurklein/lube"
-				name: "sources"
+				mountPath: "/usr/share/nginx/html"
+				name:      "sources"
 			}]
 		},
 	]
 	volumes: [{
 		name: "sources"
 		hostPath: {
-			path: "/home/florian/work/docteurklein/lube"
+			path: "/host/florian/work/docteurklein/lube"
 			type: "Directory"
 		}
 	}]
 }
+
+ingress: api: spec: rules: [{
+	host: string | *"api.demo.localhost"
+	http: paths: [{
+		path: "/"
+		backend: {
+			serviceName: "api"
+			servicePort: http_port.name
+		}
+	}]
+}]

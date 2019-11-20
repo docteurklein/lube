@@ -1,16 +1,14 @@
 package kube
 
 import (
-	"k8s.io/api/core/v1"
+	v1 "k8s.io/api/core/v1"
 	apps_v1 "k8s.io/api/apps/v1"
 	extensions_v1beta1 "k8s.io/api/extensions/v1beta1"
-	apps_v1beta1 "k8s.io/api/apps/v1beta1"
 )
 
-service: [string]:     v1.Service
-deployment: [string]:  apps_v1.Deployment
-daemonSet: [string]:   extensions_v1beta1.DaemonSet
-statefulSet: [string]: apps_v1beta1.StatefulSet
+service: [string]:    v1.Service
+deployment: [string]: apps_v1.Deployment
+ingress: [string]:    extensions_v1beta1.Ingress
 
 deployment: [ID=_]: {
 	apiVersion: "apps/v1"
@@ -34,9 +32,7 @@ service: [ID=_]: {
 	kind:       "Service"
 	metadata: {
 		name: ID
-		labels: {
-			name: ID
-		}
+		labels: name: ID
 	}
 	spec: {
 		ports: [...{
@@ -45,5 +41,14 @@ service: [ID=_]: {
 			name:     string
 		}]
 		selector: metadata.labels
+	}
+}
+
+ingress: [ID=_]: {
+	apiVersion: "networking.k8s.io/v1beta1"
+	kind:       "Ingress"
+	metadata: {
+		name: ID
+		annotations: "kubernetes.io/ingress.class": "traefik"
 	}
 }
