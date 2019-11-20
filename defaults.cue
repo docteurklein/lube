@@ -49,6 +49,6 @@ ingress: [ID=_]: {
 	kind:       "Ingress"
 	metadata: {
 		name: ID
-		annotations: "kubernetes.io/ingress.class": "traefik"
+		annotations: "kubernetes.io/ingress.class": "nginx"
 	}
 }

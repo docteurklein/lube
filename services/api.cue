@@ -7,18 +7,16 @@ http_port: {
 
 service: api: spec: ports: [http_port]
 
-deployment: api: spec: template: spec: {
-	containers: [
-		{
-			name:  "nginx"
-			image: "nginx:alpine"
-			ports: [{
-				name:          http_port.name
-				containerPort: http_port.port
-			}]
-		}
-	]
-}
+deployment: api: spec: template: spec: containers: [
+	{
+		name:  "nginx"
+		image: "nginx:alpine"
+		ports: [{
+			name:          http_port.name
+			containerPort: http_port.port
+		}]
+	},
+]
 
 ingress: api: spec: rules: [{
 	host: string | *"api.default.localhost"
