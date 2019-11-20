@@ -1,11 +1,12 @@
 # lube
 
-**L**ocal **K**ubernetes with cue-lang.
+Less painful **L**ocal K**ube**rnetes with cue-lang.
 
 ## dependencies
 
-	- https://github.com/talos-systems/talos
-	- https://github.com/cuelang/cue
+- https://github.com/talos-systems/talos
+- https://github.com/cuelang/cue
+- https://golang.org
 
 ## setup local k8s cluster
 
@@ -21,18 +22,16 @@
 
 ## setup cue
 
-	go get k8s.io/api/apps/v1
-	go get k8s.io/api/extensions/v1beta1
-	go get k8s.io/api/apps/v1beta1
-
-	cue get k8s.io/api/apps/v1
-	cue get k8s.io/api/extensions/v1beta1
-	cue get k8s.io/api/apps/v1beta1
+	xargs -P0 -L1 -n1 -I{} sh -c 'go get k8s.io/api/{} && cue get go k8s.io/api/{}' <<-EOF
+		apps/v1
+		extensions/v1beta1
+		apps/v1beta1
+	EOF
 
 
 ## deploy
 
-	cue dump ./... | kubectl apply -f -
+	cue up ./...
 
 
 ## forward locally to a random port
