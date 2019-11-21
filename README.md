@@ -12,8 +12,10 @@ Less painful **L**ocal K**ube**rnetes with cue-lang.
 
 ```
 kind create cluster --config cluster.yaml
-kubectl create ns test
-kubectl config set-context --current --namespace=test
+
+export NS="$(basename $PWD)"
+kubectl create ns "$NS"
+kubectl config set-context --current --namespace="$NS"
 
 cat > local.cue <<-EOF
 package lube
@@ -27,15 +29,15 @@ EOF
 ```
 cue yaml ./services/dev/local
 
-cue up ./services/dev/local # or prod
+cue up ./services/dev/local
 
 # down
-kubectl delete ns test
+kubectl delete ns "$NS"
 ```
 
 
 ## forward locally to a random port
 
 ```
-kubectl port-forward "$(kubectl get pod -o 'jsonpath={.items[0].metadata.name}' -l 'name=api')" 0:80
+kubectl port-forward "$(kubectl get pod -o 'jsonpath={.items[0].metadata.name}' -l 'name=nginx')" 0:80
 ```

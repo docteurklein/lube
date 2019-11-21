@@ -1,12 +1,12 @@
 package lube
 
-ingress: api: spec: rules: [{
-	host: "api.dev.localhost"
+ingress: nginx: spec: rules: [{
+	host: "nginx.dev.localhost"
 }]
 
 PWD: string
 
-deployment: api: spec: template: spec: {
+deployment: nginx: spec: template: spec: {
 	containers: [
 		{
 			volumeMounts: [{

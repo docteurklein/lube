@@ -1,10 +1,10 @@
 package lube
 
-ingress: api: spec: rules: [{
-	host: string | *"api.dev.cloud.akeneo.com"
+ingress: nginx: spec: rules: [{
+	host: string | *"nginx.dev.cloud.akeneo.com"
 }]
 
-deployment: api: spec: template: spec: containers: [...{
+deployment: nginx: spec: template: spec: containers: [...{
 	resources: {
 		requests: {
 			memory: string | *"64Mi"
