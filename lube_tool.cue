@@ -1,4 +1,4 @@
-package kube
+package lube
 
 import (
 	_yaml "encoding/yaml"

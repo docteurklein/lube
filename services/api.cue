@@ -1,4 +1,4 @@
-package kube
+package lube
 
 http_port: {
 	name: "http"

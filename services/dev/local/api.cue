@@ -1,8 +1,10 @@
-package kube
+package lube
 
 ingress: api: spec: rules: [{
 	host: "api.dev.localhost"
 }]
+
+PWD: string
 
 deployment: api: spec: template: spec: {
 	containers: [
@@ -16,7 +18,7 @@ deployment: api: spec: template: spec: {
 	volumes: [{
 		name: "sources"
 		hostPath: {
-			path: "/host/florian/work/docteurklein/lube"
+			path: PWD
 			type: "Directory"
 		}
 	}]

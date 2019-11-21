@@ -5,6 +5,7 @@ Less painful **L**ocal K**ube**rnetes with cue-lang.
 ## dependencies
 
 - https://github.com/kubernetes-sigs/kind
+- https://kubernetes.io/docs/tasks/tools/install-kubectl
 - https://github.com/cuelang/cue
 - https://golang.org
 
@@ -12,6 +13,11 @@ Less painful **L**ocal K**ube**rnetes with cue-lang.
 
 ```
 kind create cluster --config cluster.yaml
+```
+
+### add an ingress controller (once)
+
+```
 kubectl apply \
 	-f https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/static/mandatory.yaml \
 	-f https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/static/provider/cloud-generic.yaml \
@@ -32,12 +38,29 @@ EOF
 
 ## deploy
 
+### init namespace (once)
+
 ```
 kubectl create ns test
 kubectl config set-context --current --namespace=test
+```
 
-cue yaml ./services/dev
-cue up ./services/dev # or prod
+### setup local values
+
+```
+cat > local.cue <<-EOF
+package lube
+
+PWD: "/host${PWD}" // see cluster.yaml
+EOF
+```
+
+### up (after each cue modification)
+
+```
+cue yaml ./services/dev/local
+
+cue up ./services/dev/local # or prod
 
 # down
 kubectl delete ns test
