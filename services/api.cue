@@ -19,7 +19,7 @@ deployment: api: spec: template: spec: containers: [
 ]
 
 ingress: api: spec: rules: [{
-	host: string | *"api.default.localhost"
+	host: string
 	http: paths: [{
 		path: "/"
 		backend: {
