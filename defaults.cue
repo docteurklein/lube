@@ -2,7 +2,7 @@ package lube
 
 import (
 	v1 "k8s.io/api/core/v1"
-	apps_v1 "k8s.io/api/apps/v1"
+	apps_v1 "k8s.io/api/apps/v1beta1"
 	extensions_v1beta1 "k8s.io/api/extensions/v1beta1"
 )
 
@@ -16,12 +16,21 @@ deployment: [ID=_]: {
 	metadata: name: ID
 	spec: {
 		selector: matchLabels: name: ID
-		// 1 is the default, but we allow any number
 		replicas: *1 | int
 		template: {
 			metadata: labels: name: ID
 			spec: containers: [...{
 				ports: [...{containerPort: >0 & <=65365}]
+				resources: {
+					requests: {
+						memory: string | *"64Mi"
+						cpu:    string | *"250m"
+					}
+					limits: {
+						memory: string | *"128Mi"
+						cpu:    string | *"500m"
+					}
+				}
 			}]
 		}
 	}
