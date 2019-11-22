@@ -7,11 +7,15 @@ Less painful **L**ocal K**ube**rnetes with cue-lang.
 - https://github.com/kubernetes-sigs/kind
 - https://kubernetes.io/docs/tasks/tools/install-kubectl
 - https://github.com/cuelang/cue
+- https://github.com/rancher/local-path-provisioner
+
 
 ## setup local k8s cluster (once)
 
 ```
 kind create cluster --config cluster.yaml
+kubectl apply -f https://raw.githubusercontent.com/rancher/local-path-provisioner/master/deploy/local-path-storage.yaml
+
 
 export NS="$(basename $PWD)"
 kubectl create ns "$NS"
