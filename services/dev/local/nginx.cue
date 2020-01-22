@@ -35,15 +35,11 @@ deployment: nginx: spec: template: spec: {
 		},
 		{
 			name: "nginx-pvc-1"
-			persistentVolumeClaim: {
-				claimName: "nginx-pvc-1"
-			}
+			persistentVolumeClaim: claimName: "nginx-pvc-1"
 		},
 		{
 			name: "nginx-pvc-2"
-			persistentVolumeClaim: {
-				claimName: "nginx-pvc-2"
-			}
+			persistentVolumeClaim: claimName: "nginx-pvc-2"
 		},
 	]
 }

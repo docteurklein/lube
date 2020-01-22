@@ -4,17 +4,15 @@ Less painful **L**ocal K**ube**rnetes with cue-lang.
 
 ## dependencies
 
-- https://github.com/kubernetes-sigs/kind
+- https://github.com/kubernetes-sigs/kind (0.7+)
+- https://github.com/cuelang/cue (0.0.14+)
 - https://kubernetes.io/docs/tasks/tools/install-kubectl
-- https://github.com/cuelang/cue
-- https://github.com/rancher/local-path-provisioner
 
 
 ## setup local k8s cluster (once)
 
 ```
 kind create cluster --config cluster.yaml
-kubectl apply -f https://raw.githubusercontent.com/rancher/local-path-provisioner/master/deploy/local-path-storage.yaml
 
 
 export NS="$(basename $PWD)"
@@ -44,4 +42,18 @@ kubectl delete ns "$NS"
 
 ```
 kubectl port-forward "$(kubectl get pod -o 'jsonpath={.items[0].metadata.name}' -l 'name=nginx')" 0:80
+```
+
+
+## download latest kubernetes definitions
+
+> Note: This might break stuff.
+
+```
+xargs -P0 -L1 -n1 -I{} sh -c 'go get {} && cue get go {}' <<-EOF
+   k8s.io/api/core/v1
+   k8s.io/api/apps/v1
+   k8s.io/api/apps/v1beta1
+   k8s.io/api/extensions/v1beta1
+EOF
 ```

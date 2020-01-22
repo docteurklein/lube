@@ -3,7 +3,6 @@ kind: PersistentVolumeClaim
 metadata:
   name: nginx-pvc-1
 spec:
-  storageClassName: local-path
   accessModes:
     - ReadWriteOnce
   resources:
@@ -16,7 +15,6 @@ kind: PersistentVolumeClaim
 metadata:
   name: nginx-pvc-2
 spec:
-  storageClassName: local-path
   accessModes:
     - ReadWriteOnce
   resources:
