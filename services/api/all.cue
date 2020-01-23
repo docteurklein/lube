@@ -5,12 +5,12 @@ http_port: {
 	port: 80
 }
 
-service: nginx: spec: ports: [http_port]
+service: api: spec: ports: [http_port]
 
-deployment: nginx: spec: template: spec: containers: [
+deployment: api: spec: template: spec: containers: [
 	{
-		name:  "nginx"
-		image: "nginx:alpine"
+		name:  "api"
+		image: "api:test2"
 		ports: [{
 			name:          http_port.name
 			containerPort: http_port.port
@@ -18,12 +18,12 @@ deployment: nginx: spec: template: spec: containers: [
 	},
 ]
 
-ingress: nginx: spec: rules: [{
-	host: string
+ingress: api: spec: rules: [{
+	host: HOST
 	http: paths: [{
-		path: "/"
+		path: "/api"
 		backend: {
-			serviceName: "nginx"
+			serviceName: "api"
 			servicePort: http_port.name
 		}
 	}]

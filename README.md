@@ -22,16 +22,16 @@ kubectl config set-context --current --namespace="$NS"
 cat > local.cue <<-EOF
 package lube
 
-PWD: "/host${PWD}" // see cluster.yaml
+PWD: "/host${PWD}" // see cluster.yaml extraMounts
 EOF
 ```
 
 ## deploy
 
 ```
-cue yaml ./services/dev/local
+cue yaml ./services/{api,accounting}/local
 
-cue up ./services/dev/local
+cue up ./services/{api,accounting}/local
 
 # down
 kubectl delete ns "$NS"
@@ -56,4 +56,15 @@ xargs -P0 -L1 -n1 -I{} sh -c 'go get {} && cue get go {}' <<-EOF
    k8s.io/api/apps/v1beta1
    k8s.io/api/extensions/v1beta1
 EOF
+```
+
+### watch and build images
+
+```
+inotifywait -e modify -m services/accounting/Dockerfile | xargs -I{} sh -x -c '
+    docker build -t accounting -f services/accounting/Dockerfile accounting
+    echo "package lube" > accounting_hash.cue
+    echo "ACCOUNTING_HASH: $(docker image ls --no-trunc --quiet accounting | head -n1)" >> accounting_hash.cue
+    kind load docker-image accounting
+'
 ```
