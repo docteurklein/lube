@@ -9,9 +9,9 @@ deployment: api: spec: template: spec: {
 				{
 					name:      "sources"
 					mountPath: "/usr/src/app"
-				}
+				},
 			]
-		}
+		},
 	]
 	volumes: [
 		{
@@ -20,6 +20,6 @@ deployment: api: spec: template: spec: {
 				path: "\(PWD)/api"
 				type: "Directory"
 			}
-		}
+		},
 	]
 }

@@ -10,7 +10,7 @@ service: [string]:    v1.Service
 deployment: [string]: apps_v1.Deployment
 ingress: [string]:    extensions_v1beta1.Ingress
 
-deployment: [ID=_]: {
+deployment: [ID=_]: _spec & {
 	apiVersion: "apps/v1"
 	kind:       "Deployment"
 	metadata: name: ID
@@ -34,6 +34,7 @@ deployment: [ID=_]: {
 			}]
 		}
 	}
+	_with_service: bool | *true
 }
 
 service: [ID=_]: {
@@ -47,7 +48,6 @@ service: [ID=_]: {
 		ports: [...{
 			port:     >0 & <=65365
 			protocol: *"TCP" | "UDP"
-			name:     string
 		}]
 		selector: metadata.labels
 	}
@@ -59,5 +59,25 @@ ingress: [ID=_]: {
 	metadata: {
 		name: ID
 		annotations: "kubernetes.io/ingress.class": "traefik"
+	}
+}
+
+_spec: spec: template: spec: containers: [...{
+	ports: [...{
+		_export: *true | false // include the port in the service
+	}]
+}]
+
+for x in [deployment] for k, v in x if v._with_service {
+	service: "\(k)": {
+		spec: selector: v.spec.template.metadata.labels
+
+		spec: ports: [ {
+			Port = p.containerPort // Port is an alias
+			port:       *Port | int
+			targetPort: *Port | int
+		} for c in v.spec.template.spec.containers
+			for p in c.ports
+			if p._export ]
 	}
 }

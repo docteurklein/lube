@@ -15,7 +15,7 @@ deployment: accounting: spec: template: spec: {
 					mountPath: "/usr/share/nginx/html"
 				},
 			]
-		}
+		},
 	]
 	volumes: [
 		{
@@ -24,6 +24,6 @@ deployment: accounting: spec: template: spec: {
 				path: "\(PWD)/accounting"
 				type: "Directory"
 			}
-		}
+		},
 	]
 }
