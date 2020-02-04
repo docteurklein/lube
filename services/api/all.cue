@@ -10,7 +10,7 @@ service: api: spec: ports: [http_port]
 deployment: api: spec: template: spec: containers: [
 	{
 		name:  "api"
-		image: "api:test2"
+		image: "registry.localhost:5000/api:latest"
 		ports: [{
 			name:          http_port.name
 			containerPort: http_port.port
@@ -19,7 +19,7 @@ deployment: api: spec: template: spec: containers: [
 ]
 
 ingress: api: spec: rules: [{
-	host: HOST
+	host: "api.\(HOST)"
 	http: paths: [{
 		path: "/api"
 		backend: {

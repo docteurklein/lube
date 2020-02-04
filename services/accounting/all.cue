@@ -10,7 +10,11 @@ service: accounting: spec: ports: [http_port]
 deployment: accounting: spec: template: spec: containers: [
 	{
 		name:  "accounting"
-		image: "accounting:test2"
+		image: "registry.localhost:5000/accounting:latest"
+	},
+	{
+		name:  "nginx"
+		image: "nginx:latest"
 		ports: [{
 			name:          http_port.name
 			containerPort: http_port.port
@@ -19,7 +23,7 @@ deployment: accounting: spec: template: spec: containers: [
 ]
 
 ingress: accounting: spec: rules: [{
-	host: HOST
+	host: "accounting.\(HOST)"
 	http: paths: [{
 		path: "/accounting"
 		backend: {

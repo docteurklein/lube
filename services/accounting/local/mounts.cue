@@ -3,13 +3,17 @@ package lube
 PWD: string
 
 deployment: accounting: spec: template: spec: {
-	containers: [
+	containers: [...
 		{
 			volumeMounts: [
 				{
 					name:      "sources"
 					mountPath: "/usr/src/app"
-				}
+				},
+				{
+					name:      "sources"
+					mountPath: "/usr/share/nginx/html"
+				},
 			]
 		}
 	]
