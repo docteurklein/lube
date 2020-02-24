@@ -51,6 +51,7 @@ service: [ID=_]: {
 		}]
 		selector: metadata.labels
 	}
+	_with_ingress: bool | *false
 }
 
 ingress: [ID=_]: {
@@ -68,16 +69,29 @@ _spec: spec: template: spec: containers: [...{
 	}]
 }]
 
-for x in [deployment] for k, v in x if v._with_service {
-	service: "\(k)": {
-		spec: selector: v.spec.template.metadata.labels
+for x in [deployment] for ID, deployment in x if deployment._with_service {
+	service: "\(ID)": {
+		spec: selector: deployment.spec.template.metadata.labels
 
 		spec: ports: [ {
 			Port = p.containerPort // Port is an alias
 			port:       *Port | int
 			targetPort: *Port | int
-		} for c in v.spec.template.spec.containers
+		} for c in deployment.spec.template.spec.containers
 			for p in c.ports
 			if p._export ]
 	}
+}
+
+for x in [service] for ID, service in x if service._with_ingress {
+	ingress: "\(ID)": spec: rules: [{
+		host: "\(ID).\(HOST)"
+		http: paths: [{
+			path: "/\(ID)"
+			backend: {
+				serviceName: service.metadata.name
+				servicePort: "http"
+			}
+		}]
+	}]
 }

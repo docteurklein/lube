@@ -15,13 +15,4 @@ deployment: accounting: spec: template: spec: containers: [
 	},
 ]
 
-ingress: accounting: spec: rules: [{
-	host: "accounting.\(HOST)"
-	http: paths: [{
-		path: "/accounting"
-		backend: {
-			serviceName: "accounting"
-			servicePort: "http"
-		}
-	}]
-}]
+service: accounting: _with_ingress: true
