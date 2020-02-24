@@ -10,7 +10,7 @@ service: [string]:    v1.Service
 deployment: [string]: apps_v1.Deployment
 ingress: [string]:    extensions_v1beta1.Ingress
 
-deployment: [ID=_]: _spec & {
+deployment: [ID=_]: _spec & _metadata & {
 	apiVersion: "apps/v1"
 	kind:       "Deployment"
 	metadata: name: ID
@@ -37,7 +37,7 @@ deployment: [ID=_]: _spec & {
 	_with_service: bool | *true
 }
 
-service: [ID=_]: {
+service: [ID=_]: _metadata & {
 	apiVersion: "v1"
 	kind:       "Service"
 	metadata: {
@@ -54,7 +54,7 @@ service: [ID=_]: {
 	_with_ingress: bool | *false
 }
 
-ingress: [ID=_]: {
+ingress: [ID=_]: _metadata & {
 	apiVersion: "networking.k8s.io/v1beta1"
 	kind:       "Ingress"
 	metadata: {
@@ -62,6 +62,10 @@ ingress: [ID=_]: {
 		annotations: "kubernetes.io/ingress.class": "traefik"
 	}
 }
+
+NS: string @tag(NS)
+
+_metadata: metadata: namespace: NS
 
 _spec: spec: template: spec: containers: [...{
 	ports: [...{
@@ -83,9 +87,11 @@ for x in [deployment] for ID, deployment in x if deployment._with_service {
 	}
 }
 
+VHOST: string | *"localhost" @tag(vhost)
+
 for x in [service] for ID, service in x if service._with_ingress {
 	ingress: "\(ID)": spec: rules: [{
-		host: "\(ID).\(HOST)"
+		host: "\(ID).\(VHOST)"
 		http: paths: [{
 			path: "/\(ID)"
 			backend: {

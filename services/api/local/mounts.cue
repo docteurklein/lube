@@ -1,6 +1,6 @@
 package lube
 
-PWD: string
+PWD: string @tag(PWD)
 
 deployment: api: spec: template: spec: {
 	containers: [

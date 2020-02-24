@@ -4,7 +4,7 @@ Less painful **L**ocal K**ube**rnetes with cue-lang.
 
 ## dependencies
 
-- https://github.com/cuelang/cue (0.0.14+)
+- https://github.com/cuelang/cue/tree/0846b9324399ff782fcc38e0c156f418910b361c
 - https://github.com/rancher/k3d
 - https://kubernetes.io/docs/tasks/tools/install-kubectl
 
@@ -24,17 +24,8 @@ kubectl config set-context --current --namespace="$NS"
 ## deploy
 
 ```
-cat > local.cue <<-EOF
-package lube
-
-PWD: "$PWD"
-HOST: "test.example.org"
-EOF
-```
-
-```
-cue yaml ./services/{api,accounting}/local
-cue up ./services/{api,accounting}/local
+cue -t NS=$NS -t PWD=$PWD yaml ./services/{api,accounting}/local
+cue -t NS=$NS -t PWD=$PWD up ./services/{api,accounting}/local
 
 curl -isSL 0/accounting -H 'Host: accounting.test.example.org'
 ```
