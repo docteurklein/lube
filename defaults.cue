@@ -3,12 +3,21 @@ package lube
 import (
 	v1 "k8s.io/api/core/v1"
 	apps_v1 "k8s.io/api/apps/v1beta1"
+	batch_v1 "k8s.io/api/batch/v1"
 	extensions_v1beta1 "k8s.io/api/extensions/v1beta1"
 )
+
+NS: string @tag(NS)
+VHOST: string | *"localhost" @tag(vhost)
+
 
 service: [string]:    v1.Service
 deployment: [string]: apps_v1.Deployment
 ingress: [string]:    extensions_v1beta1.Ingress
+configMap: [string]:  v1.ConfigMap
+job: [string]:        batch_v1.Job
+
+_metadata: metadata: namespace: NS
 
 deployment: [ID=_]: _spec & _metadata & {
 	apiVersion: "apps/v1"
@@ -63,9 +72,24 @@ ingress: [ID=_]: _metadata & {
 	}
 }
 
-NS: string @tag(NS)
+configMap: [ID=_]: _metadata & {
+	apiVersion: "v1"
+	kind:       "ConfigMap"
+	metadata: {
+		name: ID
+		labels: name: ID
+	}
+}
 
-_metadata: metadata: namespace: NS
+job: [ID=_]: _spec & _metadata & {
+	apiVersion: "batch/v1"
+	kind:       "Job"
+	metadata: {
+		name: ID
+		labels: name: ID
+	}
+	spec: template: spec: restartPolicy: "Never"
+}
 
 _spec: spec: template: spec: containers: [...{
 	ports: [...{
@@ -86,8 +110,6 @@ for x in [deployment] for ID, deployment in x if deployment._with_service {
 			if p._export ]
 	}
 }
-
-VHOST: string | *"localhost" @tag(vhost)
 
 for x in [service] for ID, service in x if service._with_ingress {
 	ingress: "\(ID)": spec: rules: [{

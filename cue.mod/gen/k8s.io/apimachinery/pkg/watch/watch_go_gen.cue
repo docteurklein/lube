@@ -4,9 +4,7 @@
 
 package watch
 
-import (
-	"k8s.io/apimachinery/pkg/runtime"
-)
+import "k8s.io/apimachinery/pkg/runtime"
 
 // Interface can be implemented by anything that knows how to watch and report changes.
 Interface :: _
@@ -46,11 +44,7 @@ Event :: {
 }
 
 // FakeWatcher lets you test anything that consumes a watch.Interface; threadsafe.
-FakeWatcher :: {
-	Stopped: bool
-}
+FakeWatcher :: Stopped: bool
 
 // RaceFreeFakeWatcher lets you test anything that consumes a watch.Interface; threadsafe.
-RaceFreeFakeWatcher :: {
-	Stopped: bool
-}
+RaceFreeFakeWatcher :: Stopped: bool

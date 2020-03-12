@@ -39,6 +39,7 @@ curl -isSL 0/accounting -H 'Host: accounting.test.example.org'
 xargs -P0 -L1 -n1 -I{} sh -c 'go get {} && cue get go {}' <<-EOF
    k8s.io/api/core/v1
    k8s.io/api/apps/v1
+   k8s.io/api/batch/v1
    k8s.io/api/apps/v1beta1
    k8s.io/api/extensions/v1beta1
 EOF

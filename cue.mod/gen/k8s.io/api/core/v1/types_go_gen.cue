@@ -20,6 +20,9 @@ NamespaceAll :: ""
 // NamespaceNodeLease is the namespace where we place node lease objects (used for node heartbeats)
 NamespaceNodeLease :: "kube-node-lease"
 
+// TopologyKeyAny is the service topology key that matches any node
+TopologyKeyAny :: "*"
+
 // Volume represents a named volume in a pod that may be accessed by any container in the pod.
 Volume :: {
 	// Volume's name.
@@ -1472,7 +1475,7 @@ AzureFilePersistentVolumeSource :: {
 	// the namespace of the secret that contains Azure Storage Account Name and Key
 	// default is the same as the Pod
 	// +optional
-	secretNamespace: null | string @go(SecretNamespace,*string) @protobuf(4,bytes,opt)
+	secretNamespace?: null | string @go(SecretNamespace,*string) @protobuf(4,bytes,opt)
 }
 
 // Represents a vSphere volume resource.
@@ -1580,7 +1583,7 @@ ScaleIOVolumeSource :: {
 
 	// SecretRef references to the secret for ScaleIO user and other
 	// sensitive information. If this is not provided, Login operation will fail.
-	secretRef: null | LocalObjectReference @go(SecretRef,*LocalObjectReference) @protobuf(3,bytes,opt)
+	secretRef?: null | LocalObjectReference @go(SecretRef,*LocalObjectReference) @protobuf(3,bytes,opt)
 
 	// Flag to enable/disable SSL communication with Gateway, default false
 	// +optional
@@ -1626,7 +1629,7 @@ ScaleIOPersistentVolumeSource :: {
 
 	// SecretRef references to the secret for ScaleIO user and other
 	// sensitive information. If this is not provided, Login operation will fail.
-	secretRef: null | SecretReference @go(SecretRef,*SecretReference) @protobuf(3,bytes,opt)
+	secretRef?: null | SecretReference @go(SecretRef,*SecretReference) @protobuf(3,bytes,opt)
 
 	// Flag to enable/disable SSL communication with Gateway, default false
 	// +optional
@@ -2096,7 +2099,7 @@ EnvVar :: {
 // EnvVarSource represents a source for the value of an EnvVar.
 EnvVarSource :: {
 	// Selects a field of the pod: supports metadata.name, metadata.namespace, metadata.labels, metadata.annotations,
-	// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP.
+	// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
 	// +optional
 	fieldRef?: null | ObjectFieldSelector @go(FieldRef,*ObjectFieldSelector) @protobuf(1,bytes,opt)
 
@@ -2131,7 +2134,7 @@ ResourceFieldSelector :: {
 	containerName?: string @go(ContainerName) @protobuf(1,bytes,opt)
 
 	// Required: resource to select
-	resource: string @go(Resource) @protobuf(2,bytes,opt)
+	"resource": string @go(Resource) @protobuf(2,bytes,opt)
 
 	// Specifies the output format of the exposed resources, defaults to "1"
 	// +optional
@@ -3291,7 +3294,6 @@ PodSpec :: {
 	// in the same pod, and the first process in each container will not be assigned PID 1.
 	// HostPID and ShareProcessNamespace cannot both be set.
 	// Optional: Default to false.
-	// This field is beta-level and may be disabled with the PodShareProcessNamespace feature.
 	// +k8s:conversion-gen=false
 	// +optional
 	shareProcessNamespace?: null | bool @go(ShareProcessNamespace,*bool) @protobuf(27,varint,opt)
@@ -4229,6 +4231,9 @@ IPv4Protocol :: IPFamily & "IPv4"
 // IPv6Protocol indicates that this IP is IPv6 protocol
 IPv6Protocol :: IPFamily & "IPv6"
 
+// MaxServiceTopologyKeys is the largest number of topology keys allowed on a service
+MaxServiceTopologyKeys :: 16
+
 // ServiceSpec describes the attributes that a user creates on a service.
 ServiceSpec :: {
 	// The list of ports that are exposed by this service.
@@ -4355,6 +4360,21 @@ ServiceSpec :: {
 	// cluster (e.g. IPv6 in IPv4 only cluster) is an error condition and will fail during clusterIP assignment.
 	// +optional
 	ipFamily?: null | IPFamily @go(IPFamily,*IPFamily) @protobuf(15,bytes,opt,Configcasttype=IPFamily)
+
+	// topologyKeys is a preference-order list of topology keys which
+	// implementations of services should use to preferentially sort endpoints
+	// when accessing this Service, it can not be used at the same time as
+	// externalTrafficPolicy=Local.
+	// Topology keys must be valid label keys and at most 16 keys may be specified.
+	// Endpoints are chosen based on the first topology key with available backends.
+	// If this field is specified and all entries have no backends that match
+	// the topology of the client, the service has no backends for that client
+	// and connections should fail.
+	// The special value "*" may be used to mean "any topology". This catch-all
+	// value, if used, only makes sense as the last value in the list.
+	// If this is not specified or empty, no topology constraints will be applied.
+	// +optional
+	topologyKeys?: [...string] @go(TopologyKeys,[]string) @protobuf(16,bytes,opt)
 }
 
 // ServicePort contains information on service's port.
@@ -5020,7 +5040,7 @@ ResourceHugePagesPrefix :: "hugepages-"
 ResourceAttachableVolumesPrefix :: "attachable-volumes-"
 
 // ResourceList is a set of (resource name, quantity) pairs.
-ResourceList :: {[string]: resource.Quantity}
+ResourceList :: [string]: resource.Quantity
 
 // Node is a worker node in Kubernetes.
 // Each node will have a unique identifier in the cache (i.e. in etcd).
@@ -5099,6 +5119,10 @@ NamespaceActive :: NamespacePhase & "Active"
 
 // NamespaceTerminating means the namespace is undergoing graceful termination
 NamespaceTerminating :: NamespacePhase & "Terminating"
+
+// NamespaceTerminatingCause is returned as a defaults.cause item when a change is
+// forbidden due to the namespace being terminated.
+NamespaceTerminatingCause :: metav1.CauseType & "NamespaceTerminating"
 
 NamespaceConditionType :: string // enumNamespaceConditionType
 
@@ -5448,7 +5472,7 @@ TypedLocalObjectReference :: {
 	// If APIGroup is not specified, the specified Kind must be in the core API group.
 	// For any other third-party types, APIGroup is required.
 	// +optional
-	apiGroup: null | string @go(APIGroup,*string) @protobuf(1,bytes,opt)
+	apiGroup?: null | string @go(APIGroup,*string) @protobuf(1,bytes,opt)
 
 	// Kind is the type of resource being referenced
 	kind: string @go(Kind) @protobuf(2,bytes,opt)
@@ -6277,7 +6301,7 @@ WindowsSecurityContextOptions :: {
 	// Defaults to the user specified in image metadata if unspecified.
 	// May also be set in PodSecurityContext. If set in both SecurityContext and
 	// PodSecurityContext, the value specified in SecurityContext takes precedence.
-	// This field is alpha-level and it is only honored by servers that enable the WindowsRunAsUserName feature flag.
+	// This field is beta-level and may be disabled with the WindowsRunAsUserName feature flag.
 	// +optional
 	runAsUserName?: null | string @go(RunAsUserName,*string) @protobuf(3,bytes,opt)
 }

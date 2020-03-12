@@ -58,7 +58,7 @@ SerializerInfo :: {
 	EncodesAsText: bool
 
 	// Serializer is the individual object serializer for this media type.
-	Serializer: Serializer
+	"Serializer": Serializer
 
 	// PrettySerializer, if set, can serialize this object in a form biased towards
 	// readability.
@@ -66,7 +66,7 @@ SerializerInfo :: {
 
 	// StreamSerializer, if set, describes the streaming serialization format
 	// for this media type.
-	StreamSerializer: null | StreamSerializerInfo @go(,*StreamSerializerInfo)
+	StreamSerializer?: null | StreamSerializerInfo @go(,*StreamSerializerInfo)
 }
 
 // StreamSerializerInfo contains information about a specific stream serialization format
@@ -75,16 +75,21 @@ StreamSerializerInfo :: {
 	EncodesAsText: bool
 
 	// Serializer is the top level object serializer for this type when streaming
-	Serializer: Serializer
+	"Serializer": Serializer
 
 	// Framer is the factory for retrieving streams that separate objects on the wire
-	Framer: Framer
+	"Framer": Framer
 }
 
 // NegotiatedSerializer is an interface used for obtaining encoders, decoders, and serializers
 // for multiple supported media types. This would commonly be accepted by a server component
 // that performs HTTP content negotiation to accept multiple formats.
 NegotiatedSerializer :: _
+
+// ClientNegotiator handles turning an HTTP content type into the appropriate encoder.
+// Use NewClientNegotiator or NewVersionedClientNegotiator to create this interface from
+// a NegotiatedSerializer.
+ClientNegotiator :: _
 
 // StorageSerializer is an interface used for obtaining encoders, decoders, and serializers
 // that can read and write data at rest. This would commonly be used by client tools that must
