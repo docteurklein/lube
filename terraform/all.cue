@@ -1,11 +1,10 @@
 package lube
 
-job: terraform: spec: template: spec: {
+job: [ID=_]: spec: template: spec: {
 	containers: [
 		{
 			name:  "terraform"
 			image: "hashicorp/terraform"
-			command: ["sh", "/terraform/tfcommand.sh"]
 			volumeMounts: [
 				{
 					name: "terraform"

@@ -24,10 +24,17 @@ kubectl config set-context --current --namespace="$NS"
 ## deploy
 
 ```
-cue -t NS=$NS -t PWD=$PWD yaml ./services/{api,accounting}/local
-cue -t NS=$NS -t PWD=$PWD up ./services/{api,accounting}/local
+cue -t NS=$NS -t PWD=$PWD yaml ./services/*/local
+cue -t vhost=test.example.org -t NS=$NS -t PWD=$PWD up ./services/*/local ./terraform/apply
 
 curl -isSL 0/accounting -H 'Host: accounting.test.example.org'
+```
+
+## delete
+
+```
+cue -t NS=$NS up ./terraform/destroy
+kubectl delete ns "$NS"
 ```
 
 
