@@ -23,6 +23,8 @@ kubectl config set-context --current --namespace="$NS"
 
 ## deploy
 
+    kubectl create configmap terraform --from-file terraform
+
 ```
 cue -t NS=$NS -t PWD=$PWD yaml ./services/*/local
 cue -t vhost=test.example.org -t NS=$NS -t PWD=$PWD apply ./services/*/local ./terraform/apply
