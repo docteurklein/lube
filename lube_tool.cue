@@ -17,7 +17,7 @@ command: json: task: print: cli.Print & {
 	text: _json.MarshalStream(objects)
 }
 
-command: up: task: kube: exec.Run & {
+command: apply: task: kube: exec.Run & {
 	cmd:   "kubectl apply -f -"
 	stdin: _yaml.MarshalStream(objects)
 }
