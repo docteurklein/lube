@@ -7,7 +7,7 @@ import (
 	"tool/exec"
 )
 
-objects: [ x for v in [deployment, service, ingress, job, configMap] for x in v ]
+objects: [ x for v in [deployment, service, ingress, job, configMap, pvc] for x in v ]
 
 command: yaml: task: print: cli.Print & {
 	text: _yaml.MarshalStream(objects)

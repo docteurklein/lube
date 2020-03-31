@@ -12,10 +12,11 @@ VHOST: string | *"localhost" @tag(vhost)
 
 
 service: [string]:    v1.Service
-deployment: [string]: apps_v1.Deployment
-ingress: [string]:    extensions_v1beta1.Ingress
+pvc: [string]:        v1.PersistentVolumeClaim
 configMap: [string]:  v1.ConfigMap
+deployment: [string]: apps_v1.Deployment
 job: [string]:        batch_v1.Job
+ingress: [string]:    extensions_v1beta1.Ingress
 
 _metadata: metadata: namespace: NS
 
@@ -89,6 +90,20 @@ job: [ID=_]: _spec & _metadata & {
 		labels: name: ID
 	}
 	spec: template: spec: restartPolicy: "Never"
+}
+
+pvc: [ID=_]: _metadata & {
+	apiVersion: "v1"
+	kind:       "PersistentVolumeClaim"
+	metadata: {
+		name: ID
+		labels: name: ID
+	}
+	spec: {
+		accessModes: ["ReadWriteOnce"]
+		storageClassName: string
+		resources: requests: storage: string
+	}
 }
 
 _spec: spec: template: spec: containers: [...{

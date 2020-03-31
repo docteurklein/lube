@@ -23,11 +23,13 @@ kubectl config set-context --current --namespace="$NS"
 
 ## deploy
 
-    kubectl create configmap terraform --from-file terraform
+    kubectl create configmap terraform --from-file terraform || \
+    kubectl create configmap terraform --from-file terraform -o yaml --dry-run | kubectl replace -f -
+
 
 ```
 cue -t NS=$NS -t PWD=$PWD yaml ./services/*/local
-cue -t vhost=test.example.org -t NS=$NS -t PWD=$PWD apply ./services/*/local ./terraform/apply
+cue -t vhost=test.example.org -t NS=$NS -t PWD=$PWD apply ./services/*/local ./terraform
 
 curl -isSL 0/accounting -H 'Host: accounting.test.example.org'
 ```
@@ -35,7 +37,6 @@ curl -isSL 0/accounting -H 'Host: accounting.test.example.org'
 ## delete
 
 ```
-cue -t NS=$NS apply ./terraform/destroy
 kubectl delete ns "$NS"
 ```
 
