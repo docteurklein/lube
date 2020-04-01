@@ -40,6 +40,13 @@ curl -isSL 0/accounting -H 'Host: accounting.test.example.org'
 kubectl delete ns "$NS"
 ```
 
+## auto cleanup
+
+```
+kubectl apply -n default -f janitor/rbac.yaml
+cue -t NS=default apply ./janitor
+```
+
 
 ## download latest kubernetes definitions
 

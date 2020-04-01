@@ -7,8 +7,9 @@ import (
 	extensions_v1beta1 "k8s.io/api/extensions/v1beta1"
 )
 
-NS: string @tag(NS)
+NS:    string                @tag(NS)
 VHOST: string | *"localhost" @tag(vhost)
+TTL:   string | *"forever"   @tag(TTL)
 
 
 service: [string]:    v1.Service

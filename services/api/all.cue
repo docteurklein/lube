@@ -1,5 +1,6 @@
 package lube
 
+deployment: api: metadata: annotations: "janitor/ttl": TTL
 deployment: api: spec: template: spec: containers: [
 	{
 		name:  "api"
