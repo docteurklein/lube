@@ -1,0 +1,18 @@
+apiVersion: metacontroller.k8s.io/v1alpha1
+kind: DecoratorController
+metadata:
+  name: terraform-destroy
+spec:
+  resources:
+  - apiVersion: v1
+    resource: persistentvolumeclaims
+    annotationSelector:
+      matchExpressions:
+      - {key: terraform-destroy, operator: Exists}
+  attachments:
+  - apiVersion: batch/v1
+    resource: jobs
+  hooks:
+    finalize:
+      webhook:
+        url: http://terraform-destroy.metacontroller

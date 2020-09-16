@@ -23,11 +23,10 @@ kubectl config set-context --current --namespace="$NS"
 
 ## deploy
 
-    kubectl create configmap terraform --from-file terraform || \
-    kubectl create configmap terraform --from-file terraform -o yaml --dry-run | kubectl replace -f -
-
-
 ```
+kubectl create configmap terraform --from-file terraform || \
+kubectl create configmap terraform --from-file terraform -o yaml --dry-run | kubectl replace -f -
+
 cue -t NS=$NS -t PWD=$PWD yaml ./services/*/local
 cue -t vhost=test.example.org -t NS=$NS -t PWD=$PWD apply ./services/*/local ./terraform
 
@@ -43,8 +42,19 @@ kubectl delete ns "$NS"
 ## auto cleanup
 
 ```
-kubectl apply -n default -f janitor/rbac.yaml
-cue -t NS=default apply ./janitor
+kubectl apply -n janitor -f janitor/rbac.yaml
+cue -t NS=janitor apply ./janitor
+
+kubectl annotate ns "$NS" janitor/ttl=1h
+```
+
+
+## terraform controller
+
+```
+kubectl create namespace metacontroller
+kubectl -n metacontroller apply -f https://raw.githubusercontent.com/GoogleCloudPlatform/metacontroller/master/manifests/metacontroller-rbac.yaml
+kubectl -n metacontroller apply -f https://raw.githubusercontent.com/GoogleCloudPlatform/metacontroller/master/manifests/metacontroller.yaml
 ```
 
 

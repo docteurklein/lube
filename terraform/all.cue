@@ -35,5 +35,4 @@ pvc: tfstate: spec: {
 	storageClassName: "local-path"
 	resources: requests: storage: "50Mi"
 }
-
-pvc: tfstate: metadata: annotations: "terraform-destroy": "yes"
+pvc: tfstate: metadata: annotations: "terraform-destroy": "terraform init /terraform && terraform destroy -auto-approve /terraform"
